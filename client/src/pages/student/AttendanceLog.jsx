@@ -33,7 +33,7 @@ export default function AttendanceLog() {
       <div className="flex justify-between">
         <h1 className="font-bold text-lg mb-0">Student Dashboard</h1>
         <div>
-          <Button type="primary">Logout</Button>
+          <Link to="/login">Login</Link>
         </div>
       </div>
 

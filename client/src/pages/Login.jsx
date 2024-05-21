@@ -20,9 +20,18 @@ export default function Login() {
         "http://localhost:3000/api/v1/auth/login",
         payload
       );
-      if (res.data.status === 200) {
-        localStorage.setItem("token", res.data.accessToken);
+
+      if (res.data.user.role === "TEACHER") {
+        navigate("/teacher/dashboard");
+      } else if (res.data.user.role === "STUDENT") {
         navigate("/student/dashboard");
+      }
+
+      if (res.data.status === 200) {
+        localStorage.setItem("name", res.data.user.name);
+        localStorage.setItem("email", res.data.user.email);
+        localStorage.setItem("phone", res.data.user.phone);
+        localStorage.setItem("role", res.data.user.role);
       }
       setIsLoading(false);
     } catch (error) {

@@ -1,13 +1,33 @@
+import { Bar } from "@ant-design/plots";
 import { Col, Row, Form, Select, Button } from "antd";
 import React from "react";
+import { Link } from "react-router-dom";
+
+const data = [
+  { subject: "Major Project", value: 98 },
+  { subject: "Internship", value: 85 },
+];
 
 export default function StudentDasboard() {
+  const config = {
+    data,
+    xField: "subject",
+    yField: "value",
+    shapeField: "hollow",
+    colorField: "subject",
+    legend: {
+      color: { size: 80, autoWrap: true, maxRows: 3, cols: 6 },
+    },
+  };
+
   return (
     <div className="container mx-auto my-6">
       <div className="flex justify-between">
         <h1 className="font-bold text-lg mb-0">Student Dashboard</h1>
         <div>
-          <Button type="primary">Logout</Button>
+          <Link to="/login" className="text-blue-700">
+            Logout
+          </Link>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-6 py-10">
@@ -42,6 +62,11 @@ export default function StudentDasboard() {
           </div>
         </div>
       </div>
+
+      <h1 className="font-bold text-lg mb-4">Student Overall Attendance</h1>
+      <Col span={24} className="mx-auto border rounded-lg mb-16">
+        <Bar {...config} />
+      </Col>
     </div>
   );
 }
