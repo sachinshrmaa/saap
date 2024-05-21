@@ -6,6 +6,8 @@ import App from "./App.jsx";
 import Login from "./pages/Login.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import StudentDashboard from "./pages/student/StudentDashboard.jsx";
+import AttendanceLog from "./pages/student/AttendanceLog.jsx";
+import TeacherDashboard from "./pages/teacher/TeacherDashboard.jsx";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +22,14 @@ const router = createBrowserRouter([
   {
     path: "/student/dashboard",
     element: <StudentDashboard />,
+  },
+  {
+    path: "/student/attendance-log",
+    element: <AttendanceLog />,
+  },
+  {
+    path: "/teacher/dashboard",
+    element: <TeacherDashboard />,
   },
 ]);
 

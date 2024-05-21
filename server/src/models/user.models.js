@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
@@ -48,6 +48,20 @@ const studentSchema = new mongoose.Schema({
   },
 });
 
+const batchSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  start_year: {
+    type: Number,
+    required: true,
+  },
+  end_year: {},
+  status: {},
+});
+
 const User = mongoose.model("User", userSchema);
 const Student = mongoose.model("Student", studentSchema);
-export default { User, Student };
+
+export { User, Student };
