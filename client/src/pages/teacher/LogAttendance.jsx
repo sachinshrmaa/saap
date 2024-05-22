@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row, Form, Select, Table, message } from "antd";
+import { Button, Col, Row, Form, Select, Table, message } from "antd";
 import TextArea from "antd/es/input/TextArea";
 import React, { useState } from "react";
 import axios from "axios";
@@ -7,12 +7,12 @@ const columns = [
   {
     key: "roolNo",
     title: "Roll No.",
-    dataIndex: "rollNo",
+    dataIndex: "roll_number",
   },
   {
     key: "studentName",
     title: "Student Name",
-    dataIndex: "studentName",
+    dataIndex: "name",
   },
   Table.SELECTION_COLUMN,
 ];
@@ -21,7 +21,7 @@ export default function LogAttendance() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [totalStudentsCount, setTotalStudentsCount] = useState(2); // update this
+  const [totalStudentsCount, setTotalStudentsCount] = useState(null); // update this
   const [classRemark, setClassRemark] = useState("");
   const [subjectCode, setSubjectCode] = useState("");
   const [batchCode, setBatchCode] = useState("");
@@ -29,22 +29,9 @@ export default function LogAttendance() {
 
   const [toastNotification, toastNotificationHolder] = message.useMessage();
 
-  const data = [
-    {
-      key: "1",
-      rollNo: "20csec33",
-      studentName: "sachin sharma",
-    },
-    {
-      key: "2",
-      rollNo: "20csec33",
-      studentName: "sachin sharma",
-    },
-  ];
-
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     let absentStudents = [];
-    selectedRows.forEach((student) => absentStudents.push(student.rollNo));
+    selectedRows.forEach((student) => absentStudents.push(student.roll_number));
 
     let payload = {
       subjectCode,
@@ -54,7 +41,12 @@ export default function LogAttendance() {
     };
     try {
       setIsSubmitting(true);
-      console.log("submitting the form ", payload);
+      const res = await axios.post(
+        "http://localhost:3000/api/v1/attendance/log",
+        payload,
+        { withCredentials: true }
+      );
+      console.log(res);
       setIsSubmitting(false);
       toastNotification.success({
         type: "success",
@@ -83,20 +75,30 @@ export default function LogAttendance() {
 
   const fetchStudents = async () => {
     let payload = {
-      subjectCode,
       batchCode,
     };
     try {
       setIsLoading(true);
-      const res = await axios.post("/", payload);
+      const res = await axios.post(
+        "http://localhost:3000/api/v1/students/list",
+        payload,
+        { withCredentials: true }
+      );
 
-      console.log(res.data);
+      const studentsWithKeys = res.data.map((student) => ({
+        ...student,
+        key: student.id,
+      }));
+
+      setTotalStudentsCount(res.data.length);
+
+      setStudentsDetail(studentsWithKeys);
       setIsLoading(false);
     } catch (error) {
-      setIsSubmitting(false);
+      setIsLoading(false);
       toastNotification.error({
         type: "error",
-        content: "Attendance marked failed!",
+        content: "Students fetched failed!",
       });
       console.log(error);
     }
@@ -177,7 +179,7 @@ export default function LogAttendance() {
         <div className="my-6">
           <Table
             columns={columns}
-            dataSource={data}
+            dataSource={studentsDetail}
             rowSelection={rowSelection}
             pagination={false}
             loading={isLoading}

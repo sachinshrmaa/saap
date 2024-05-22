@@ -19,7 +19,7 @@ const signUp = async (req, res) => {
   };
 
   userData.password = bycrypt.hashSync(password, 10);
-  
+
   try {
     if (await getUserByEmail(email))
       return res.status(400).json({ message: "User already exists" });
@@ -44,7 +44,7 @@ const logIn = async (req, res) => {
   try {
     user = await getUserByEmail(email);
   } catch (error) {
-    console.log("Failed to fetch User:", error)
+    console.log("Failed to fetch User:", error);
     return res.status(500).json({ message: error.message });
   }
 
@@ -52,16 +52,17 @@ const logIn = async (req, res) => {
     return res.status(400).json({ message: "User does not exists" });
   }
 
-  if (!bycrypt.compareSync(password, user.password)){
+  if (!bycrypt.compareSync(password, user.password)) {
     return res.status(400).json({ message: "Invalid credentials" });
   } else {
     const token = generateToken({ userId: user.id });
     res.cookie("accessToken", token, {
       httpOnly: true,
       maxAge: 24 * 60 * 60 * 1000,
+      origin: "localhost",
     });
     user.password = undefined;
-    return res.status(200).json({ message: "Logged in successfully", user});
+    return res.status(200).json({ message: "Logged in successfully", user });
   }
 };
 

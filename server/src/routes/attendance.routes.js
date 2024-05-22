@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { logAttendance } from "../controllers/attendance.controllers.js";
+import {
+  logAttendance,
+  getStudentAttendance,
+} from "../controllers/attendance.controllers.js";
 import { requireAuth } from "../middlewares/auth.middleware.js";
 import { requireTeacher } from "../middlewares/rbac.middleware.js";
 const router = Router();
@@ -8,6 +11,7 @@ const router = Router();
 // @METHOD: POST
 // @DESC: Log attendance
 // @AUTH: required, teacher
-router.post("/log", requireAuth, requireTeacher, logAttendance)
+router.post("/log", requireAuth, requireTeacher, logAttendance);
+router.get("/attendance", requireAuth, getStudentAttendance);
 
 export default router;

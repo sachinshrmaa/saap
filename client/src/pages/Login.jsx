@@ -18,7 +18,8 @@ export default function Login() {
       setIsLoading(true);
       const res = await axios.post(
         "http://localhost:3000/api/v1/auth/login",
-        payload
+        payload,
+        { withCredentials: true }
       );
 
       if (res.data.user.role === "TEACHER") {
@@ -27,7 +28,7 @@ export default function Login() {
         navigate("/student/dashboard");
       }
 
-      if (res.data.status === 200) {
+      if (res.data.message === "Logged in successfully") {
         localStorage.setItem("name", res.data.user.name);
         localStorage.setItem("email", res.data.user.email);
         localStorage.setItem("phone", res.data.user.phone);
@@ -51,6 +52,9 @@ export default function Login() {
         span={10}
         className="bg-slate-100 mx-auto px-6 py-8 rounded-md mt-20 "
       >
+        <h1 className="font-semibold text-lg text-center mb-3">
+          Student Attendance Analytics Portal
+        </h1>
         <h1 className="font-semibold text-lg text-center mb-3">
           Welcome Back, Login
         </h1>

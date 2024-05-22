@@ -1,22 +1,56 @@
-import { Bar } from "@ant-design/plots";
-import { Col, Row, Form, Select, Button } from "antd";
-import React from "react";
+// import { Bar } from "@ant-design/plots";
+import { Bar } from "@ant-design/charts";
+import { Col, Row, Form, Select, Button, message } from "antd";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-const data = [
-  { subject: "Major Project", value: 98 },
-  { subject: "Internship", value: 85 },
-];
+import axios from "axios";
 
 export default function StudentDasboard() {
+  const [studentAttendance, setStudentAttendance] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    fetchStudentAttendance();
+  }, []);
+
+  const fetchStudentAttendance = async () => {
+    try {
+      setIsLoading(true);
+      const res = await axios.get(
+        "http://localhost:3000/api/v1/attendance/attendance",
+        { withCredentials: true }
+      );
+
+      let tempData = [];
+
+      res.data.forEach((item) => {
+        let tempObj = {
+          subject_name: item.subject_name,
+          attendance_percentage: (
+            (item.present / item.total_classes) *
+            100
+          ).toFixed(2),
+        };
+        tempData.push(tempObj);
+      });
+
+      setStudentAttendance(tempData);
+
+      console.log(tempData);
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error.message);
+    }
+  };
+
   const config = {
-    data,
-    xField: "subject",
-    yField: "value",
-    shapeField: "hollow",
-    colorField: "subject",
+    data: studentAttendance,
+    xField: "subject_name",
+    yField: "attendance_percentage",
+    colorField: "subject_name",
     legend: {
-      color: { size: 80, autoWrap: true, maxRows: 3, cols: 6 },
+      color: { size: 100, autoWrap: true, maxRows: 3, cols: 6 },
     },
   };
 
@@ -34,8 +68,7 @@ export default function StudentDasboard() {
         <div className="bg-slate-100 border rounded-lg p-6">
           <h1 className="font-bold">Student Details</h1>
           <div className="mt-3">
-            <p>Name: Sachin Sharma</p>
-            <p>Roll No: 20CSEC33</p>
+            <p>Name: {localStorage.getItem("name")}</p>
             <p>Sem: 8</p>
             <p>Batch: 2020-2024</p>
           </div>

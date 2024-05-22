@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // CORS middleware
-app.use(cors());
+app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 
 app.get("/ping", async (req, res) => {
   res.json({ message: "pong" });

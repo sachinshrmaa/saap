@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { registerStudent, getStudents } from "../controllers/students.controllers.js";
+import {
+  registerStudent,
+  getStudents,
+} from "../controllers/students.controllers.js";
 import { requireAuth } from "../middlewares/auth.middleware.js";
 import { requireTeacher } from "../middlewares/rbac.middleware.js";
 
